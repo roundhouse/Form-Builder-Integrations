@@ -1,0 +1,43 @@
+{% import "form-builder/_includes/_components" as components %}
+
+{% set templatePath = 'form-builder-integrations/types/converge/fields/' %}
+<section class="cmp-tout-alt" id="integration-{{ type }}-{{ index }}" data-type="{{ type }}">
+
+    <input type="hidden" name="integrations[{{ type }}][integrationId]" value="{{ integration.id }}">
+
+    <header>
+        <div class="titlebar">
+            <span class="tout-title">
+                {% include 'form-builder-integrations/icons/integrations-' ~ type ignore missing %}
+                <span class="type-title">{{ type }}</span>
+                <a href="#" class="delete-btn" data-target="integration-{{ type }}-{{ index }}">Remove</a>
+            </span>
+            <div class="integration-info">
+                <span class="integration-title">{{ integration.name }}</span>
+                <div class="status-container">
+                    {% if integration.status == 'enabled' %}
+                        <div class="status on" title="Enabled"></div>
+                    {% else %}
+                        <div class="status off" title="Disabled"></div>
+                    {% endif %}
+                    <div class="status-title">{{ integration.status |pascal }}</div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="body">
+        <div class="fields">
+            {% include templatePath ~ 'transaction-type' ignore missing %}
+            {% include templatePath ~ 'cc-number-field' ignore missing %}
+            {% include templatePath ~ 'cc-cvc-field' ignore missing %}
+            {% include templatePath ~ 'cc-expiration-field' ignore missing %}
+            {% include templatePath ~ 'cc-amount-field' ignore missing %}
+
+            {% include templatePath ~ 'cc-name-field' ignore missing %}
+            {% include templatePath ~ 'cc-email-field' ignore missing %}
+            {% include templatePath ~ 'cc-phone-field' ignore missing %}
+        </div>
+    </div>
+
+</section>

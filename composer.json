@@ -1,0 +1,41 @@
+{
+    "name": "roundhouse/form-builder-integrations",
+    "description": "Collection of integrations for Form Builder",
+    "type": "craft-plugin",
+    "version": "1.0.0",
+    "keywords": [
+        "craft",
+        "cms",
+        "craftcms",
+        "craft-plugin",
+        "form builder integrations"
+    ],
+    "support": {
+        "docs": "https://github.com/roundhouse/form-builder-integrations/blob/master/README.md",
+        "issues": "https://github.com/roundhouse/form-builder-integrations/issues"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Vadim Goncharov",
+            "homepage": "https://roundhouseagency.com"
+        }
+    ],
+    "require": {
+        "craftcms/cms": "^3.0.0-RC1",
+        "league/omnipay": "^3",
+        "owldesign/omnipay-converge": "^1.0.0"
+    },
+    "autoload": {
+        "psr-4": {
+          "roundhouse\\formbuilderintegrations\\": "src/"
+        }
+    },
+    "extra": {
+        "name": "Form Builder Integrations",
+        "handle": "form-builder-integrations",
+        "description": "Collection of integrations for Form Builder",
+        "developer": "Vadim Goncharov",
+        "class": "roundhouse\\formbuilderintegrations\\FormBuilderIntegrations"
+    }
+}

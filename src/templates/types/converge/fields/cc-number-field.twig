@@ -1,0 +1,44 @@
+{% import "form-builder/_includes/_components" as components %}
+
+{% set availableFields = form.fieldLayoutId is defined and form.fieldLayoutId ? craft.app.getFields.getLayoutById(form.fieldLayoutId).getFields() : null %}
+{% set fieldsOption = [] %}
+{% set fieldsOption = [{'label': 'Select Field', 'value': ''}] %}
+{% for field in availableFields %}
+    {% set fieldsOption = fieldsOption|merge([{ 'label': field.name, 'value': field.handle }]) %}
+{% endfor %}
+
+{% set nameText = 'integrations[converge][ccNumberField]' %}
+
+{% set container = {
+    title: 'Credit Card Field' |t,
+    info: null,
+    icon: null,
+    toggle: false,
+    class: null,
+    id: null
+} %}
+
+{% set inputs = {
+    0: {
+        type: 'select',
+        name: nameText,
+        value: form.integrations.converge.ccNumberField is defined and form.integrations.converge.ccNumberField != '' ? form.integrations.converge.ccNumberField : '',
+        options: fieldsOption |json_encode(),
+        class: 'hidden',
+        id: null,
+        hint: 'FIELD'
+    }
+} %}
+
+{% set modal = {
+    title: 'Credit Card Number' |t,
+    instructions: 'Please map credit card number field to available fields from the dropdown.' |t,
+    successMessage: 'CC Number Field Mapped' |t,
+    inputs: inputs
+} %}
+
+{{ components.optionItem(
+    container,
+    modal,
+    inputs
+) }}

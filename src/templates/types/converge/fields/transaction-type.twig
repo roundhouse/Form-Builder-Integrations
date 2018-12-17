@@ -1,0 +1,46 @@
+{% import "form-builder/_includes/_components" as components %}
+
+{% set fieldsOption = [
+    {'label': 'Sale', 'value': 'ccsale'},
+    {'label': 'Auth Only', 'value': 'ccauthonly'},
+    {'label': 'Return', 'value': 'ccreturn'},
+    {'label': 'Void', 'value': 'ccvoid'},
+    {'label': 'Verify', 'value': 'ccverify'},
+    {'label': 'Generate Token', 'value': 'ccgettoken'},
+] %}
+
+{% set nameText = 'integrations[converge][transactionType]' %}
+
+{% set container = {
+    title: 'Transaction Type' |t,
+    info: null,
+    icon: null,
+    toggle: false,
+    class: null,
+    id: null
+} %}
+
+{% set inputs = {
+    0: {
+        type: 'select',
+        name: nameText,
+        value: form.integrations.converge.transactionType is defined and form.integrations.converge.transactionType != '' ? form.integrations.converge.transactionType : '',
+        options: fieldsOption |json_encode(),
+        class: 'hidden',
+        id: null,
+        hint: 'TYPE'
+    }
+} %}
+
+{% set modal = {
+    title: 'Transaction Type' |t,
+    instructions: 'Please chose transaction type from the dropdown.' |t,
+    successMessage: 'Transaction Type Updated' |t,
+    inputs: inputs
+} %}
+
+{{ components.optionItem(
+    container,
+    modal,
+    inputs
+) }}

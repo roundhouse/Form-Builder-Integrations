@@ -42,6 +42,8 @@ class FormBuilderIntegrations extends Plugin
 
     // Public Properties
     // =========================================================================
+    public $entry;
+    public $integrationRecordId;
 
     /**
      * @var string
@@ -87,12 +89,15 @@ class FormBuilderIntegrations extends Plugin
             $entry = $e->entry;
             $integrations = $form->getIntegrations();
 
+            // Save entry variable
+            $this->entry = $entry;
 
             foreach ($integrations as $type => $integration) {
                 switch ($type) {
                     case 'converge':
                         // Converge Integration
                         $converge = Converge::instance()->prepare($form, $entry, $integration);
+
                         if ($converge->hasErrors()) {
                             $e->isValid = false;
                         }

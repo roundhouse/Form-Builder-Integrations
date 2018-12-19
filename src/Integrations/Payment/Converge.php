@@ -4,10 +4,14 @@ namespace roundhouse\formbuilderintegrations\Integrations\Payment;
 
 use Craft;
 use craft\base\Component;
+use craft\helpers\Json;
+use craft\helpers\DateTimeHelper;
 use craft\web\View;
 use yii\base\Exception;
 use roundhouse\formbuilder\FormBuilder;
 use roundhouse\formbuilderintegrations\Integrations\Payment\Converge\ConvergeValidation;
+use roundhouse\formbuilderintegrations\models\Converge as ConvergeModel;
+use roundhouse\formbuilderintegrations\records\Converge as ConvergeRecord;
 
 use Omnipay\Omnipay;
 use Omnipay\Common\CreditCard;
@@ -87,20 +91,95 @@ class Converge extends Component
         $response = $transaction->send();
 
         if ($response->isSuccessful()) {
-            Craft::$app->session->setFlash('paymentSuccess', $response->getMessage());
+            FormBuilder::info('Integration Converge payment success! ' . $response->getMessage());
+
+            try {
+                // Normalize Fields
+                $data = $response->getData();
+                $this->entry->{$converge['ccNumberField']} = $data['ssl_card_number'];
+                $this->entry->{$converge['ccCvcField']} = '***';
+
+                $postFields = $_POST['fields'];
+                $title = isset($this->form->settings['database']['titleFormat']) && $this->form->settings['database']['titleFormat'] != '' ? $this->form->settings['database']['titleFormat'] : 'Submission - '.DateTimeHelper::currentTimeStamp();
+
+                foreach ($postFields as $handle => $field) {
+                    if ($converge['ccNumberField'] === $handle) {
+                        $postFields[$converge['ccNumberField']] = $data['ssl_card_number'];
+                    }
+
+                    if ($converge['ccCvcField'] === $handle) {
+                        $postFields[$converge['ccCvcField']] = '***';
+                    }
+                }
+
+                $newTitle = Craft::$app->getView()->renderObjectTemplate($title, $postFields);
+                $this->entry->title = $newTitle;
+
+            } catch(\Throwable $e) {
+                FormBuilder::error('Integration Converge normalizing fields and changing title failed! ' . $e);
+            }
+
+            // Save transaction record
+            $result = $this->saveRecord($response);
+
+            if ($result) {
+                $integrationResults = [
+                    'integrationId' => $this->integration['integrationId'],
+                    'integrationRecordId' => $result
+                ];
+                $this->entry->settings = Json::encode($integrationResults);
+            }
+
         } else {
             if ($response->getCode() === '4007') {
                 $field = Craft::$app->fields->getFieldByHandle($converge['ccCvcField']);
-                $entry->addError($converge['ccCvcField'], FormBuilder::t($field->name . ' is required'));
+                $this->entry->addError($converge['ccCvcField'], FormBuilder::t($field->name . ' is required'));
             }
-            Craft::$app->session->setFlash('paymentFailed', $response->getMessage());
+
+            FormBuilder::error('Integration Converge payment failed! ' . $response->getMessage());
         }
 
-        return $entry;
+        return $this->entry;
     }
 
     // Private Methods
     // =========================================================================
+
+    private function saveRecord($response)
+    {
+        $data = $response->getData();
+
+        $model = new ConvergeModel();
+        $model->integrationId = $this->integration['integrationId'];
+        $model->amount = $data['ssl_amount'];
+        $model->currency = $this->currency->getCode();
+        $model->last4 = substr($data['ssl_card_number'], -4);
+        $model->status = $response->getMessage();
+        $model->metadata = Json::encode($data);
+
+        $record = new ConvergeRecord();
+        $record->integrationId = $model->integrationId;
+        $record->amount = $model->amount;
+        $record->currency = $model->currency;
+        $record->last4 = $model->last4;
+        $record->status = $model->status;
+        $record->metadata = $model->metadata;
+
+        $transaction = Craft::$app->getDb()->beginTransaction();
+
+        try {
+            $record->save(false);
+            $transaction->commit();
+
+            return $record->id;
+
+        } catch (\Throwable $e) {
+            $transaction->rollBack();
+            FormBuilder::error('Integration Converge Record failed to save! ' . $e);
+
+            return false;
+        }
+    }
 
     /**
      * Build Customer

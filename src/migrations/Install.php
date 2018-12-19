@@ -68,10 +68,10 @@ class Install extends Migration
         $this->createTable('{{%formbuilder_integrations_payments}}', [
             'id' => $this->primaryKey(),
             'integrationId' => $this->integer()->notNull(),
-            'entryId' => $this->integer()->notNull(),
-            'amount' => $this->float(2),
-            'currency' => $this->string(3),
-            'last4' => $this->smallInteger(),
+            'entryId' => $this->integer(),
+            'amount' => $this->string(),
+            'currency' => $this->string(),
+            'last4' => $this->string(),
             'status' => $this->string(),
             'metadata' => $this->mediumText(),
             'errorCode' => $this->string(),
@@ -87,7 +87,7 @@ class Install extends Migration
      */
     protected function createIndexes()
     {
-        $this->createIndex($this->db->getIndexName('{{%formbuilder_integrations_payments}}', 'integrationId', false), '{{%formbuilder_integrations_payments}}', 'integrationId', true);
+        $this->createIndex($this->db->getIndexName('{{%formbuilder_integrations_payments}}', 'integrationId', false), '{{%formbuilder_integrations_payments}}', 'integrationId', false);
 
         // Additional commands depending on the db driver
         switch ($this->driver) {
@@ -104,7 +104,6 @@ class Install extends Migration
     protected function addForeignKeys()
     {
         $this->addForeignKey($this->db->getForeignKeyName('{{%formbuilder_integrations_payments}}', 'integrationId'), '{{%formbuilder_integrations_payments}}', 'integrationId', '{{%formbuilder_integrations}}', 'id', null, null);
-        $this->addForeignKey($this->db->getForeignKeyName('{{%formbuilder_integrations_payments}}', 'entryId'), '{{%formbuilder_integrations_payments}}', 'entryId', '{{%formbuilder_entries}}', 'id', null, null);
     }
 
     /**

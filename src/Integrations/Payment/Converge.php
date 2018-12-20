@@ -213,13 +213,25 @@ class Converge extends Component
         $this->card = new CreditCard();
 
         if (isset($this->integration['ccExpirationMonthField']) && $this->entry->{$this->integration['ccExpirationMonthField']} != '') {
-            $this->card->setExpiryMonth($this->entry->{$this->integration['ccExpirationMonthField']});
+            $field = Craft::$app->fields->getFieldByHandle($this->integration['ccExpirationMonthField']);
+            if (get_class($field) === 'craft\\fields\\Dropdown') {
+                $value = $this->entry->{$this->integration['ccExpirationMonthField']}->value;
+            } else {
+                $value = $this->entry->{$this->integration['ccExpirationMonthField']};
+            }
+            $this->card->setExpiryMonth($value);
         } else {
             $this->entry->addError($this->integration['ccExpirationMonthField'], FormBuilder::t('Expiration month is required'));
         }
 
         if (isset($this->integration['ccExpirationYearField']) && $this->entry->{$this->integration['ccExpirationYearField']} != '') {
-            $this->card->setExpiryYear($this->entry->{$this->integration['ccExpirationYearField']});
+            $field = Craft::$app->fields->getFieldByHandle($this->integration['ccExpirationMonthField']);
+            if (get_class($field) === 'craft\\fields\\Dropdown') {
+                $value = $this->entry->{$this->integration['ccExpirationYearField']}->value;
+            } else {
+                $value = $this->entry->{$this->integration['ccExpirationYearField']};
+            }
+            $this->card->setExpiryYear($value);
         } else {
             $this->entry->addError($this->integration['ccExpirationYearField'], FormBuilder::t('Expiration year is required'));
         }

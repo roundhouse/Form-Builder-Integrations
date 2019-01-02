@@ -60,9 +60,9 @@ class Converge extends Component
         $this->buildCreditCard();
 
         $this->currency     = $this->buildCurrency();
-        $this->amountValue  = (isset($converge['ccAmountField']) && $this->integration['ccAmountField'] != '' ? $this->entry->{$this->integration['ccAmountField']} : null);
-//        $this->amount       = $this->buildAmount();
-        
+        $this->amountValue  = $this->buildAmount($converge);
+//        $this->amountValue  = (isset($converge['ccAmountField']) && $this->integration['ccAmountField'] != '' ? $this->entry->{$this->integration['ccAmountField']} : null);
+
         // Validate Entry
         if ($entry->hasErrors()) {
             return $entry;
@@ -237,10 +237,14 @@ class Converge extends Component
         }
 
         if (isset($this->integration['ccNumberField']) && $this->entry->{$this->integration['ccNumberField']} != '') {
-            $cardNumber = $this->entry->{$this->integration['ccNumberField']};
+            $cardNumber = preg_replace('/\s+/', '', $this->entry->{$this->integration['ccNumberField']});
 
-            if (!Helper::validateLuhn($cardNumber)) {
+            if (!is_numeric($cardNumber)) {
                 $this->entry->addError($this->integration['ccNumberField'], FormBuilder::t('Card number is invalid'));
+            } else {
+                if (!Helper::validateLuhn($cardNumber)) {
+                    $this->entry->addError($this->integration['ccNumberField'], FormBuilder::t('Card number is invalid'));
+                }
             }
 
             if (!is_null($cardNumber) && !preg_match('/^\d{12,19}$/i', $cardNumber)) {
@@ -298,25 +302,16 @@ class Converge extends Component
     /**
      * Get money object
      *
-     * @param null $money
-     * @return \Money\Money|null
-     * @throws \Omnipay\Common\Exception\InvalidRequestException
      */
-    private function buildAmount($money = null)
+    private function buildAmount($converge)
     {
-        if (!$this->amountValue) {
+        $result = isset($converge['ccAmountField']) && $this->integration['ccAmountField'] != '' ? $this->entry->{$this->integration['ccAmountField']} : null;
+        
+        if (!$result) {
             $this->entry->addError($this->integration['ccAmountField'], FormBuilder::t('Amount is required'));
-        } else {
-            $money = ConvergeValidation::instance()->getMoney();
-            if (!ConvergeValidation::instance()->negativeAmountAllowed && $money->isNegative()) {
-                $this->entry->addError($this->integration['ccAmountField'], FormBuilder::t('A negative amount is not allowed.'));
-            }
-            if (!ConvergeValidation::instance()->zeroAmountAllowed && $money->isZero()) {
-                $this->entry->addError($this->integration['ccAmountField'], FormBuilder::t('A zero amount is not allowed.'));
-            }
         }
 
-        return $money;
+        return $result;
     }
 
     /**

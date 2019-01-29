@@ -9,6 +9,7 @@ use craft\helpers\DateTimeHelper;
 use craft\web\View;
 use yii\base\Exception;
 use roundhouse\formbuilder\FormBuilder;
+use roundhouse\formbuilderintegrations\events\EntryEvent;
 use roundhouse\formbuilderintegrations\Integrations\Payment\Converge\ConvergeValidation;
 use roundhouse\formbuilderintegrations\models\Converge as ConvergeModel;
 use roundhouse\formbuilderintegrations\records\Converge as ConvergeRecord;
@@ -36,6 +37,11 @@ class Converge extends Component
     public $integration;
     public $integrationModel;
     public $settings;
+
+    // Constants
+    // =========================================================================
+
+    const EVENT_AFTER_SAVE = 'afterSave';
 
     // Public Methods
     // =========================================================================
@@ -165,6 +171,13 @@ class Converge extends Component
         $record->status = $model->status;
         $record->metadata = $model->metadata;
 
+        if ($this->hasEventHandlers(self::EVENT_AFTER_SAVE)) {
+            $this->trigger(self::EVENT_AFTER_SAVE, new EntryEvent([
+                'response' => $data,
+                'model' => $model,
+            ]));
+        }
+
         $transaction = Craft::$app->getDb()->beginTransaction();
 
         try {
@@ -256,7 +269,7 @@ class Converge extends Component
             }
 
             $this->card->setNumber($this->entry->{$this->integration['ccNumberField']});
-            
+
         } else {
             $this->entry->addError($this->integration['ccNumberField'], FormBuilder::t('Card number is required'));
         }
@@ -306,7 +319,7 @@ class Converge extends Component
     private function buildAmount($converge)
     {
         $result = isset($converge['ccAmountField']) && $this->integration['ccAmountField'] != '' ? $this->entry->{$this->integration['ccAmountField']} : null;
-        
+
         if (!$result) {
             $this->entry->addError($this->integration['ccAmountField'], FormBuilder::t('Amount is required'));
         }

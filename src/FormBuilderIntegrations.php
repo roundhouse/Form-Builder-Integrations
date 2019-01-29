@@ -83,7 +83,7 @@ class FormBuilderIntegrations extends Plugin
             $variable->set('fbi', $this::$plugin);
         });
 
-
+        // Before submit entry
         Event::on(EntriesController::class, EntriesController::EVENT_BEFORE_SUBMIT_ENTRY, function(Event $e) {
             $form = $e->form;
             $entry = $e->entry;
@@ -92,16 +92,18 @@ class FormBuilderIntegrations extends Plugin
             // Save entry variable
             $this->entry = $entry;
 
-            foreach ($integrations as $type => $integration) {
-                switch ($type) {
-                    case 'converge':
-                        // Converge Integration
-                        $converge = Converge::instance()->prepare($form, $entry, $integration);
+            if ($integrations) {
+                foreach ($integrations as $type => $integration) {
+                    switch ($type) {
+                        case 'converge':
+                            // Converge Integration
+                            $converge = Converge::instance()->prepare($form, $entry, $integration);
 
-                        if ($converge->hasErrors()) {
-                            $e->isValid = false;
-                        }
-                        break;
+                            if ($converge->hasErrors()) {
+                                $e->isValid = false;
+                            }
+                            break;
+                    }
                 }
             }
         });

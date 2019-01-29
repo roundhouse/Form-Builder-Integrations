@@ -1,5 +1,10 @@
 # Form Builder Integrations Changelog
 
+## 1.0.4 - 2019-01-29
+
+### Added
+- Added afterSave event to converge integration
+
 ## 1.0.3 - 2019-01-02
 
 ### Improved

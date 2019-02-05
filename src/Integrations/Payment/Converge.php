@@ -67,7 +67,6 @@ class Converge extends Component
 
         $this->currency     = $this->buildCurrency();
         $this->amountValue  = $this->buildAmount($converge);
-//        $this->amountValue  = (isset($converge['ccAmountField']) && $this->integration['ccAmountField'] != '' ? $this->entry->{$this->integration['ccAmountField']} : null);
 
         // Validate Entry
         if ($entry->hasErrors()) {
@@ -120,6 +119,8 @@ class Converge extends Component
 
                 $newTitle = Craft::$app->getView()->renderObjectTemplate($title, $postFields);
                 $this->entry->title = $newTitle;
+                
+                Craft::dd($newTitle);
 
             } catch(\Throwable $e) {
                 FormBuilder::error('Integration Converge normalizing fields and changing title failed! ' . $e);
@@ -140,6 +141,10 @@ class Converge extends Component
             if ($response->getCode() === '4007') {
                 $field = Craft::$app->fields->getFieldByHandle($converge['ccCvcField']);
                 $this->entry->addError($converge['ccCvcField'], FormBuilder::t($field->name . ' is required'));
+            }
+
+            if ($response->getCode() === '4025') {
+                $this->entry->addError($converge['ccCvcField'], FormBuilder::t($response->getMessage()));
             }
 
             FormBuilder::error('Integration Converge payment failed! ' . $response->getMessage());

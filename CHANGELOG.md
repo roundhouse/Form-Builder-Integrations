@@ -1,5 +1,11 @@
 # Form Builder Integrations Changelog
 
+## 1.0.6 - 2019-02-05
+
+### Fixed
+- Fixed a converge integration bug
+- Added masking to CC and CVC regardless if transaction is successful or not
+
 ## 1.0.5 - 2019-02-05
 
 ### Fixed

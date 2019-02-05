@@ -18,6 +18,7 @@ use Omnipay\Omnipay;
 use Omnipay\Common\CreditCard;
 use Omnipay\Common\Helper;
 use Money\Currency;
+use Pachico\Magoo\Magoo;
 
 class Converge extends Component
 {
@@ -99,29 +100,27 @@ class Converge extends Component
             FormBuilder::info('Integration Converge payment success! ' . $response->getMessage());
 
             try {
+                $this->_maskCredentials($converge);
                 // Normalize Fields
-                $data = $response->getData();
-                $this->entry->{$converge['ccNumberField']} = $data['ssl_card_number'];
-                $this->entry->{$converge['ccCvcField']} = '***';
-
-                $postFields = $_POST['fields'];
-                $title = isset($this->form->settings['database']['titleFormat']) && $this->form->settings['database']['titleFormat'] != '' ? $this->form->settings['database']['titleFormat'] : 'Submission - '.DateTimeHelper::currentTimeStamp();
-
-                foreach ($postFields as $handle => $field) {
-                    if ($converge['ccNumberField'] === $handle) {
-                        $postFields[$converge['ccNumberField']] = $data['ssl_card_number'];
-                    }
-
-                    if ($converge['ccCvcField'] === $handle) {
-                        $postFields[$converge['ccCvcField']] = '***';
-                    }
-                }
-
-                $newTitle = Craft::$app->getView()->renderObjectTemplate($title, $postFields);
-                $this->entry->title = $newTitle;
-                
-                Craft::dd($newTitle);
-
+//                $data = $response->getData();
+//                $this->entry->{$converge['ccNumberField']} = $data['ssl_card_number'];
+//                $this->entry->{$converge['ccCvcField']} = '***';
+//
+//                $postFields = $_POST['fields'];
+//                $title = isset($this->form->settings['database']['titleFormat']) && $this->form->settings['database']['titleFormat'] != '' ? $this->form->settings['database']['titleFormat'] : 'Submission - '.DateTimeHelper::currentTimeStamp();
+//
+//                foreach ($postFields as $handle => $field) {
+//                    if ($converge['ccNumberField'] === $handle) {
+//                        $postFields[$converge['ccNumberField']] = $data['ssl_card_number'];
+//                    }
+//
+//                    if ($converge['ccCvcField'] === $handle) {
+//                        $postFields[$converge['ccCvcField']] = '***';
+//                    }
+//                }
+//
+//                $newTitle = Craft::$app->getView()->renderObjectTemplate($title, $postFields);
+//                $this->entry->title = $newTitle;
             } catch(\Throwable $e) {
                 FormBuilder::error('Integration Converge normalizing fields and changing title failed! ' . $e);
             }
@@ -138,6 +137,8 @@ class Converge extends Component
             }
 
         } else {
+            $this->_maskCredentials($converge);
+
             if ($response->getCode() === '4007') {
                 $field = Craft::$app->fields->getFieldByHandle($converge['ccCvcField']);
                 $this->entry->addError($converge['ccCvcField'], FormBuilder::t($field->name . ' is required'));
@@ -155,6 +156,31 @@ class Converge extends Component
 
     // Private Methods
     // =========================================================================
+
+    private function _maskCredentials($converge)
+    {
+        $magoo = new Magoo();
+        $magoo->maskCreditCards();
+
+        $this->entry->{$converge['ccNumberField']} = $magoo->getMasked($this->entry->{$converge['ccNumberField']});
+        $this->entry->{$converge['ccCvcField']} = '***';
+        
+        $postFields = $_POST['fields'];
+        $title = isset($this->form->settings['database']['titleFormat']) && $this->form->settings['database']['titleFormat'] != '' ? $this->form->settings['database']['titleFormat'] : 'Submission - '.DateTimeHelper::currentTimeStamp();
+
+        foreach ($postFields as $handle => $field) {
+            if ($converge['ccNumberField'] === $handle) {
+                $postFields[$converge['ccNumberField']] = $magoo->getMasked($this->entry->{$converge['ccNumberField']});
+            }
+
+            if ($converge['ccCvcField'] === $handle) {
+                $postFields[$converge['ccCvcField']] = '***';
+            }
+        }
+
+        $newTitle = Craft::$app->getView()->renderObjectTemplate($title, $postFields);
+        $this->entry->title = $newTitle;
+    }
 
     private function saveRecord($response)
     {

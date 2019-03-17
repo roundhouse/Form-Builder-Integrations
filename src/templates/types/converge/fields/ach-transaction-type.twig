@@ -1,13 +1,7 @@
 {% import "form-builder/_includes/_components" as components %}
 
 {% set fieldsOption = [
-    {'label': 'ECheck/ACH Sale', 'value': 'ecspurchase'},
-    {'label': 'CC Sale', 'value': 'ccsale'},
-    {'label': 'CC Auth Only', 'value': 'ccauthonly'},
-    {'label': 'CC Return', 'value': 'ccreturn'},
-    {'label': 'CC Void', 'value': 'ccvoid'},
-    {'label': 'CC Verify', 'value': 'ccverify'},
-    {'label': 'CC Generate Token', 'value': 'ccgettoken'},
+    {'label': 'Sale', 'value': 'ecspurchase'},
 ] %}
 
 {% set nameText = 'integrations[converge][transactionType]' %}

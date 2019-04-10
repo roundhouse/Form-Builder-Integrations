@@ -27,6 +27,16 @@
                     </div>
                 </div>
 
+                <div class="fb-field" id="field-type">
+                    <div class="input-hint">TYPE</div>
+                    <div class="select">
+                        <select name="settings[type]">
+                            <option value="CreditCard" {% if entry.settings['type'] == 'CreditCard' %}selected{% endif %}>Credit card</option>
+                            <option value="ECheckACH" {% if entry.settings['type'] == 'ECheckACH' %}selected{% endif %}>ECheck / ACH</option>
+                        </select>
+                    </div>
+                </div>
+
                 <div class="fb-field" id="field-pin">
                     <div class="input-hint">TEST MODE</div>
                     <div class="select">

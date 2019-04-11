@@ -1,5 +1,13 @@
 # Form Builder Integrations Changelog
 
+## 1.0.7 - 2019-04-11
+
+### Added
+- Echeck/ACH transaction types and CreditCard refactoring
+
+### Fixed
+- Fixed undefined type key error for already created Converge integrations
+
 ## 1.0.6 - 2019-02-05
 
 ### Fixed

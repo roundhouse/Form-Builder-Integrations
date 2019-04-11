@@ -28,31 +28,30 @@
 
     <div class="body">
         <div class="fields">
-          {% include templatePath ~ 'transaction-type' ignore missing %}
-          {% if "ECheckACH" == integration.settings.type %}
-            {% include templatePath ~ 'ach-aba-number' ignore missing %}
-            {% include templatePath ~ 'ach-bank-account-number' ignore missing %}
-            {% include templatePath ~ 'ach-agree' ignore missing %}
-            {% include templatePath ~ 'ach-amount' ignore missing %}
-            {% include templatePath ~ 'ach-bank-account-type' ignore missing %}
-            {% include templatePath ~ 'ach-first-name' ignore missing %}
-            {% include templatePath ~ 'ach-last-name' ignore missing %}
-            {% include templatePath ~ 'ach-company' ignore missing %}
+            {% include templatePath ~ 'transaction-type' ignore missing %}
+            {% if integration.settings.type is defined and integration.settings.type == "ECheckACH" %}
+                {% include templatePath ~ 'ach-aba-number' ignore missing %}
+                {% include templatePath ~ 'ach-bank-account-number' ignore missing %}
+                {% include templatePath ~ 'ach-agree' ignore missing %}
+                {% include templatePath ~ 'ach-amount' ignore missing %}
+                {% include templatePath ~ 'ach-bank-account-type' ignore missing %}
+                {% include templatePath ~ 'ach-first-name' ignore missing %}
+                {% include templatePath ~ 'ach-last-name' ignore missing %}
+                {% include templatePath ~ 'ach-company' ignore missing %}
 
+                {#
+                ssl_company	C
+                #}
+            {% else %}
+                {% include templatePath ~ 'cc-number-field' ignore missing %}
+                {% include templatePath ~ 'cc-cvc-field' ignore missing %}
+                {% include templatePath ~ 'cc-expiration-field' ignore missing %}
+                {% include templatePath ~ 'cc-amount-field' ignore missing %}
 
-{#
-ssl_company	C	
-#}
-          {% else %}
-            {% include templatePath ~ 'cc-number-field' ignore missing %}
-            {% include templatePath ~ 'cc-cvc-field' ignore missing %}
-            {% include templatePath ~ 'cc-expiration-field' ignore missing %}
-            {% include templatePath ~ 'cc-amount-field' ignore missing %}
-
-            {% include templatePath ~ 'cc-name-field' ignore missing %}
-            {% include templatePath ~ 'cc-email-field' ignore missing %}
-            {% include templatePath ~ 'cc-phone-field' ignore missing %}
-          {% endif %}
+                {% include templatePath ~ 'cc-name-field' ignore missing %}
+                {% include templatePath ~ 'cc-email-field' ignore missing %}
+                {% include templatePath ~ 'cc-phone-field' ignore missing %}
+            {% endif %}
         </div>
     </div>
 

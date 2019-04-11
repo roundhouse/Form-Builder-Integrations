@@ -31,8 +31,8 @@
                     <div class="input-hint">TYPE</div>
                     <div class="select">
                         <select name="settings[type]">
-                            <option value="CreditCard" {% if entry.settings['type'] == 'CreditCard' %}selected{% endif %}>Credit card</option>
-                            <option value="ECheckACH" {% if entry.settings['type'] == 'ECheckACH' %}selected{% endif %}>ECheck / ACH</option>
+                            <option value="CreditCard" {% if entry.settings['type'] is defined and entry.settings['type'] == 'CreditCard' %}selected{% endif %}>Credit card</option>
+                            <option value="ECheckACH" {% if entry.settings['type'] is defined and entry.settings['type'] == 'ECheckACH' %}selected{% endif %}>ECheck / ACH</option>
                         </select>
                     </div>
                 </div>

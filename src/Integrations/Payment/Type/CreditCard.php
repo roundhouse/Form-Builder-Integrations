@@ -186,7 +186,7 @@ class CreditCard implements Type {
   }
 
   public function handleFailure(OmnipayResponse $response, Form $form) {
-    $this->maskCredentials();
+    $this->maskCredentials($form);
 
     if ($response->getCode() === '4007') {
       $field = Craft::$app->fields->getFieldByHandle($this->converge['ccCvcField']);

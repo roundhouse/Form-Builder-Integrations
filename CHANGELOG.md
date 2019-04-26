@@ -1,5 +1,10 @@
 # Form Builder Integrations Changelog
 
+## 1.0.11 - 2019-04-26
+
+### Fixed
+- Fixing masking for Credit Cards and CVV
+
 ## 1.0.10 - 2019-04-26
 
 ### Fixed

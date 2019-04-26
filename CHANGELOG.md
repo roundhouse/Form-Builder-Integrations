@@ -1,5 +1,10 @@
 # Form Builder Integrations Changelog
 
+## 1.0.8 - 2019-04-26
+
+### Fixed
+- Missing $form in CC masking method
+
 ## 1.0.7 - 2019-04-11
 
 ### Added

@@ -186,16 +186,16 @@ class CreditCard implements Type {
   }
 
   public function handleFailure(OmnipayResponse $response, Form $form) {
-    $this->maskCredentials($form);
-
     if ($response->getCode() === '4007') {
-      $field = Craft::$app->fields->getFieldByHandle($this->converge['ccCvcField']);
-      $this->entry->addError($this->converge['ccCvcField'], FormBuilder::t($field->name . ' is required'));
+      $this->entry->addError($this->integration['ccCvcField'], FormBuilder::t($field->name . ' is required'));
+      return;
     }
 
     if ($response->getCode() === '4025') {
-      $this->entry->addError($this->converge['ccCvcField'], FormBuilder::t($response->getMessage()));
+      $this->entry->addError($this->integration['ccCvcField'], FormBuilder::t($response->getMessage()));
+      return;
     }
+    // $this->maskCredentials($form); //XXX: This doesn't work at this point!
 
     FormBuilder::error('Integration Converge payment failed! ' . $response->getMessage());
   }

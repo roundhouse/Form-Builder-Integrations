@@ -2,7 +2,7 @@
     "name": "roundhouse/form-builder-integrations",
     "description": "Collection of integrations for Form Builder",
     "type": "craft-plugin",
-    "version": "1.0.8",
+    "version": "1.0.9",
     "keywords": [
         "craft",
         "cms",

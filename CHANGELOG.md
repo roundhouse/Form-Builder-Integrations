@@ -1,5 +1,10 @@
 # Form Builder Integrations Changelog
 
+## 1.0.9 - 2019-04-26
+
+### Improved
+- Better error handling on API failures
+
 ## 1.0.8 - 2019-04-26
 
 ### Fixed

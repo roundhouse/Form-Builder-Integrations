@@ -1,5 +1,10 @@
 # Form Builder Integrations Changelog
 
+## 1.0.12 - 2019-04-26
+
+### Fixed
+- Bump omnipay-converge version to 1.0.6
+
 ## 1.0.11 - 2019-04-26
 
 ### Fixed

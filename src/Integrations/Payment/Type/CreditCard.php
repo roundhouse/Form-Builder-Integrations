@@ -186,6 +186,7 @@ class CreditCard implements Type {
   }
 
   public function handleFailure(OmnipayResponse $response, Form $form) {
+    $this->maskCredentials($form);
     if ($response->getCode() === '4007') {
       $this->entry->addError($this->integration['ccCvcField'], FormBuilder::t($field->name . ' is required'));
       return;
@@ -195,7 +196,6 @@ class CreditCard implements Type {
       $this->entry->addError($this->integration['ccCvcField'], FormBuilder::t($response->getMessage()));
       return;
     }
-    // $this->maskCredentials($form); //XXX: This doesn't work at this point!
 
     FormBuilder::error('Integration Converge payment failed! ' . $response->getMessage());
   }
@@ -205,17 +205,17 @@ class CreditCard implements Type {
       $magoo = new Magoo();
       $magoo->maskCreditCards();
 
-      $this->entry->{$this->converge['ccNumberField']} = $magoo->getMasked($this->entry->{$this->converge['ccNumberField']});
-      $this->entry->{$this->converge['ccCvcField']} = '***';
+      $this->entry->{$this->integration['ccNumberField']} = $magoo->getMasked($this->entry->{$this->integration['ccNumberField']});
+      $this->entry->{$this->integration['ccCvcField']} = '***';
 
       $postFields = $_POST['fields'];
       foreach ($postFields as $handle => $field) {
-        if ($this->converge['ccNumberField'] === $handle) {
-          $postFields[$this->converge['ccNumberField']] = $magoo->getMasked($this->entry->{$this->converge['ccNumberField']});
+        if ($this->integration['ccNumberField'] === $handle) {
+          $postFields[$this->integration['ccNumberField']] = $magoo->getMasked($this->entry->{$this->integration['ccNumberField']});
         }
 
-        if ($this->converge['ccCvcField'] === $handle) {
-          $postFields[$this->converge['ccCvcField']] = '***';
+        if ($this->integration['ccCvcField'] === $handle) {
+          $postFields[$this->integration['ccCvcField']] = '***';
         }
       }
       $title = isset($form->settings['database']['titleFormat']) && $form->settings['database']['titleFormat'] != '' ? $form->settings['database']['titleFormat'] : 'Submission - '.DateTimeHelper::currentTimeStamp();

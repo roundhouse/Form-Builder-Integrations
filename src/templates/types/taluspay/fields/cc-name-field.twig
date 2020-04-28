@@ -1,0 +1,54 @@
+{% import "form-builder/_includes/_components" as components %}
+
+{% set availableFields = form.fieldLayoutId is defined and form.fieldLayoutId ? craft.app.getFields.getLayoutById(form.fieldLayoutId).getFields() : null %}
+{% set fieldsOption = [] %}
+{% set fieldsOption = [{'label': 'Select Field', 'value': ''}] %}
+{% for field in availableFields %}
+    {% set fieldsOption = fieldsOption|merge([{ 'label': field.name, 'value': field.handle }]) %}
+{% endfor %}
+
+{% set firstName = 'integrations[taluspay][firstNameField]' %}
+{% set lastName = 'integrations[taluspay][lastNameField]' %}
+
+{% set container = {
+    title: 'Customer Name Fields' |t,
+    info: null,
+    icon: null,
+    toggle: false,
+    class: null,
+    id: null
+} %}
+
+{% set inputs = {
+    0: {
+        type: 'select',
+        name: firstName,
+        value: form.integrations.taluspay.firstNameField is defined and form.integrations.taluspay.firstNameField != '' ? form.integrations.taluspay.firstNameField : '',
+        options: fieldsOption |json_encode(),
+        class: 'hidden',
+        id: null,
+        hint: 'FIRST NAME FIELD'
+    },
+    1: {
+        type: 'select',
+        name: lastName,
+        value: form.integrations.taluspay.lastNameField is defined and form.integrations.taluspay.lastNameField != '' ? form.integrations.taluspay.lastNameField : '',
+        options: fieldsOption |json_encode(),
+        class: 'hidden',
+        id: null,
+        hint: 'LAST NAME FIELD'
+    }
+} %}
+
+{% set modal = {
+    title: 'Customer Name Fields' |t,
+    instructions: 'Please map customer name fields to available fields from the dropdown.' |t,
+    successMessage: 'Name Field Mapped' |t,
+    inputs: inputs
+} %}
+
+{{ components.optionItem(
+    container,
+    modal,
+    inputs
+) }}

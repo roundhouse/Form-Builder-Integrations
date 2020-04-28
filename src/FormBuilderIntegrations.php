@@ -19,6 +19,7 @@ use craft\web\twig\variables\CraftVariable;
 use roundhouse\formbuilder\controllers\EntriesController;
 use roundhouse\formbuilderintegrations\plugin\Services;
 use roundhouse\formbuilderintegrations\Integrations\Payment\Converge;
+use roundhouse\formbuilderintegrations\Integrations\Payment\Taluspay;
 
 use yii\base\Event;
 
@@ -103,6 +104,13 @@ class FormBuilderIntegrations extends Plugin
                                 $e->isValid = false;
                             }
                             break;
+                        case 'taluspay':
+                            $taluspay = Taluspay::instance()->prepare($form, $entry, $integration);
+
+                            if ($taluspay->hasErrors()) {
+                                $e->isValid = false;
+                            }
+                            break;
                     }
                 }
             }
@@ -111,7 +119,8 @@ class FormBuilderIntegrations extends Plugin
         Craft::$app->view->hook('formbuilder-integrations-types', function(array &$context) {
             // Make dynamic
             $integrations['integrations'] = [
-                ['category' => 'payment', 'frontend' => true, 'type' => 'converge', 'name' => 'Converge', 'icon' => 'converge']
+                ['category' => 'payment', 'frontend' => true, 'type' => 'converge', 'name' => 'Converge', 'icon' => 'converge'],
+                ['category' => 'payment', 'frontend' => true, 'type' => 'taluspay', 'name' => 'Talus Pay', 'icon' => 'taluspay'],
             ];
             return Craft::$app->view->renderTemplate('form-builder-integrations/types/_items', $integrations);
         });

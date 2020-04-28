@@ -1,0 +1,54 @@
+{% import "form-builder/_includes/_components" as components %}
+
+{% set availableFields = form.fieldLayoutId is defined and form.fieldLayoutId ? craft.app.getFields.getLayoutById(form.fieldLayoutId).getFields() : null %}
+{% set fieldsOption = [] %}
+{% set fieldsOption = [{'label': 'Select Field', 'value': ''}] %}
+{% for field in availableFields %}
+    {% set fieldsOption = fieldsOption|merge([{ 'label': field.name, 'value': field.handle }]) %}
+{% endfor %}
+
+{% set nameExpirationMonth = 'integrations[taluspay][ccExpirationMonthField]' %}
+{% set nameExpirationYear = 'integrations[taluspay][ccExpirationYearField]' %}
+
+{% set container = {
+    title: 'Expiration Field' |t,
+    info: null,
+    icon: null,
+    toggle: false,
+    class: null,
+    id: null
+} %}
+
+{% set inputs = {
+    0: {
+        type: 'select',
+        name: nameExpirationMonth,
+        value: form.integrations.taluspay.ccExpirationMonthField is defined and form.integrations.taluspay.ccExpirationMonthField != '' ? form.integrations.taluspay.ccExpirationMonthField : '',
+        options: fieldsOption |json_encode(),
+        class: 'hidden',
+        id: null,
+        hint: 'MONTH FIELD'
+    },
+    1: {
+        type: 'select',
+        name: nameExpirationYear,
+        value: form.integrations.taluspay.ccExpirationYearField is defined and form.integrations.taluspay.ccExpirationYearField != '' ? form.integrations.taluspay.ccExpirationYearField : '',
+        options: fieldsOption |json_encode(),
+        class: 'hidden',
+        id: null,
+        hint: 'YEAR FIELD'
+    }
+} %}
+
+{% set modal = {
+    title: 'Expiration Date' |t,
+    instructions: 'Please map credit card expiration field to available fields from the dropdown.' |t,
+    successMessage: 'Expiration Field Mapped' |t,
+    inputs: inputs
+} %}
+
+{{ components.optionItem(
+    container,
+    modal,
+    inputs
+) }}

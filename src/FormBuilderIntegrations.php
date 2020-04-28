@@ -95,6 +95,7 @@ class FormBuilderIntegrations extends Plugin
 
             if ($integrations) {
                 foreach ($integrations as $type => $integration) {
+                    $integration['type'] = $type;
                     switch ($type) {
                         case 'converge':
                             // Converge Integration

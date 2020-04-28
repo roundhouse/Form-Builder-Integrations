@@ -25,6 +25,7 @@
         "craftcms/cms": "^3.0.0-RC1",
         "league/omnipay": "^3",
         "owldesign/omnipay-converge": "^1.0.0",
+
         "pachico/magoo": "^1.0.0"
     },
     "autoload": {

@@ -4,14 +4,15 @@ namespace roundhouse\formbuilderintegrations\Integrations\Payment\Type;
 
 use Craft;
 
+use Omnipay\TalusPay\Message\CreditCard\AuthorizeResponse;
 use roundhouse\formbuilder\FormBuilder;
 use roundhouse\formbuilder\elements\Entry;
 use roundhouse\formbuilder\elements\Form;
 
-use Omnipay\Converge\Gateway;
+use Omnipay\Common\AbstractGateway;
 use Omnipay\Common\CreditCard as OmnipayCreditCard;
 use Omnipay\Common\Helper;
-use Omnipay\Converge\Message\Response as OmnipayResponse;
+use Omnipay\Common\Message\AbstractResponse as OmnipayResponse;
 
 use Money\Currency;
 use Pachico\Magoo\Magoo;
@@ -19,7 +20,9 @@ use craft\helpers\Json;
 use craft\helpers\DateTimeHelper;
 
 use roundhouse\formbuilderintegrations\models\Converge as ConvergeModel;
+use roundhouse\formbuilderintegrations\models\Taluspay as TaluspayModel;
 use roundhouse\formbuilderintegrations\records\Converge as ConvergeRecord;
+use roundhouse\formbuilderintegrations\records\Taluspay as TaluspayRecord;
 
 class CreditCard implements Type {
   use CommonMethods;
@@ -29,7 +32,7 @@ class CreditCard implements Type {
   private $entry;
   private $integration;
 
-  public function __construct(Gateway $gateway, Currency $currency, Entry $entry, array $integration) {
+  public function __construct(AbstractGateway $gateway, Currency $currency, Entry $entry, array $integration) {
     $this->gateway     = $gateway;
     $this->currency    = $currency;
     $this->entry       = $entry;
@@ -156,33 +159,23 @@ class CreditCard implements Type {
   }
 
   public function handleSuccess(OmnipayResponse $response, Form $form) {
-    FormBuilder::info('Integration Converge payment success! ' . $response->getMessage());
+      $type = $this->integration['type'];
+    FormBuilder::info("Integration {$type} payment success! " . $response->getMessage());
 
     try {
         $this->maskCredentials($form);
     } catch(\Throwable $e) {
-        FormBuilder::error('Integration Converge normalizing fields and changing title failed! ' . $e);
+        FormBuilder::error("Integration {$type} normalizing fields and changing title failed! " . $e);
     }
 
     $data = $response->getData();
 
-    $model = new ConvergeModel();
-    $model->integrationId = $this->integration['integrationId'];
-    $model->amount = $data['ssl_amount'];
-    $model->currency = $this->currency->getCode();
-    $model->last4 = substr($data['ssl_card_number'], -4);
-    $model->status = $response->getMessage();
-    $model->metadata = Json::encode($data);
-
-    $record = new ConvergeRecord();
-    $record->integrationId = $model->integrationId;
-    $record->amount = $model->amount;
-    $record->currency = $model->currency;
-    $record->last4 = $model->last4;
-    $record->status = $model->status;
-    $record->metadata = $model->metadata;
-
-    return [$model, $record];
+    switch ($type) {
+        case 'converge':
+            return $this->createConvergeRecords($data, $response);
+        case 'taluspay':
+            return $this->createTaluspayRecords($data, $response);
+    }
   }
 
   public function handleFailure(OmnipayResponse $response, Form $form) {
@@ -197,7 +190,7 @@ class CreditCard implements Type {
       return;
     }
 
-    FormBuilder::error('Integration Converge payment failed! ' . $response->getMessage());
+    FormBuilder::error("Integration ${$type} payment failed! " . $response->getMessage());
   }
 
   private function maskCredentials(Form $form)
@@ -222,4 +215,53 @@ class CreditCard implements Type {
 
       $this->entry->title = Craft::$app->getView()->renderObjectTemplate($title, $postFields);
   }
+
+    /**
+     * @param $data
+     * @param OmnipayResponse $response
+     * @return array
+     */
+    private function createConvergeRecords($data, OmnipayResponse $response)
+    {
+        $model = new ConvergeModel();
+        $model->integrationId = $this->integration['integrationId'];
+        $model->amount = $data['ssl_amount'];
+        $model->currency = $this->currency->getCode();
+        $model->last4 = substr($data['ssl_card_number'], -4);
+        $model->status = $response->getMessage();
+        $model->metadata = Json::encode($data);
+
+        $record = new ConvergeRecord();
+        $record->integrationId = $model->integrationId;
+        $record->amount = $model->amount;
+        $record->currency = $model->currency;
+        $record->last4 = $model->last4;
+        $record->status = $model->status;
+        $record->metadata = $model->metadata;
+
+        return [$model, $record];
+    }
+
+
+    private function createTaluspayRecords($data, OmnipayResponse $response)
+    {
+        /** @var  AuthorizeResponse $response */
+        $model = new TaluspayModel();
+        $model->integrationId = $this->integration['integrationId'];
+        $model->amount = $response->getRequest()->getData()['amount'];
+        $model->currency = $this->currency->getCode();
+        $model->last4 = substr($data['masked_card_number'], -4);
+        $model->status = $response->getMessage();
+        $model->metadata = Json::encode($data);
+
+        $record = new TaluspayRecord();
+        $record->integrationId = $model->integrationId;
+        $record->amount = $model->amount;
+        $record->currency = $model->currency;
+        $record->last4 = $model->last4;
+        $record->status = $model->status;
+        $record->metadata = $model->metadata;
+
+        return [$model, $record];
+    }
 }

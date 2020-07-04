@@ -1,4 +1,4 @@
-{% import "form-builder/_includes/_components" as components %}
+{% import "_includes/forms" as forms %}
 
 {% set availableFields = form.fieldLayoutId is defined and form.fieldLayoutId ? craft.app.getFields.getLayoutById(form.fieldLayoutId).getFields() : null %}
 {% set fieldsOption = [] %}
@@ -9,36 +9,45 @@
 
 {% set nameText = 'integrations[taluspay][achCompany]' %}
 
-{% set container = {
-    title: 'Company Field' |t,
-    info: null,
-    icon: null,
-    toggle: false,
-    class: null,
-    id: null
-} %}
+{{ forms.selectField({
+    label: "Company Field"|t('form-builder'),
+    instructions: "Required for ACH ECheck with Business Checks. Company Name."|t('form-builder'),
+    value: form.integrations.taluspay.achCompany is defined and form.integrations.taluspay.achCompany != '' ? form.integrations.taluspay.achCompany : '',
+    name: nameText,
+    options: fieldsOption,
+}) }}
 
-{% set inputs = {
-    0: {
-        type: 'select',
-        name: nameText,
-        value: form.integrations.taluspay.achCompany is defined and form.integrations.taluspay.achCompany != '' ? form.integrations.taluspay.achCompany : '',
-        options: fieldsOption |json_encode(),
-        class: 'hidden',
-        id: null,
-        hint: 'FIELD'
-    }
-} %}
+{#{% import "form-builder/_includes/_components" as components %}#}
+{#{% set container = {#}
+{#    title: 'Company Field' |t,#}
+{#    info: null,#}
+{#    icon: null,#}
+{#    toggle: false,#}
+{#    class: null,#}
+{#    id: null#}
+{#} %}#}
 
-{% set modal = {
-    title: 'Company Field' |t,
-    instructions: 'Required for ACH ECheck with Business Checks. Company Name.' |t,
-    successMessage: 'Company Field Mapped' |t,
-    inputs: inputs
-} %}
+{#{% set inputs = {#}
+{#    0: {#}
+{#        type: 'select',#}
+{#        name: nameText,#}
+{#        value: form.integrations.taluspay.achCompany is defined and form.integrations.taluspay.achCompany != '' ? form.integrations.taluspay.achCompany : '',#}
+{#        options: fieldsOption |json_encode(),#}
+{#        class: 'hidden',#}
+{#        id: null,#}
+{#        hint: 'FIELD'#}
+{#    }#}
+{#} %}#}
 
-{{ components.optionItem(
-    container,
-    modal,
-    inputs
-) }}
+{#{% set modal = {#}
+{#    title: 'Company Field' |t,#}
+{#    instructions: 'Required for ACH ECheck with Business Checks. Company Name.' |t,#}
+{#    successMessage: 'Company Field Mapped' |t,#}
+{#    inputs: inputs#}
+{#} %}#}
+
+{#{{ components.optionItem(#}
+{#    container,#}
+{#    modal,#}
+{#    inputs#}
+{#) }}#}

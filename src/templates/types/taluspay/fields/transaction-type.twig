@@ -1,42 +1,56 @@
-{% import "form-builder/_includes/_components" as components %}
+{% import "_includes/forms" as forms %}
 
+{% set nameText = 'integrations[taluspay][transactionType]' %}
 {% set fieldsOption = [
     {'label': 'ECheck/ACH Sale', 'value': 'ecspurchase'},
     {'label': 'CC Sale', 'value': 'ccsale'}
 ] %}
 
-{% set nameText = 'integrations[taluspay][transactionType]' %}
+{{ forms.selectField({
+    label: "Transaction Type"|t('form-builder'),
+    instructions: "Please chose transaction type from the dropdown."|t('form-builder'),
+    value: form.integrations.taluspay.transactionType is defined and form.integrations.taluspay.transactionType != '' ? form.integrations.taluspay.transactionType : '',
+    name: nameText,
+    options: fieldsOption,
+}) }}
 
-{% set container = {
-    title: 'Transaction Type' |t,
-    info: null,
-    icon: null,
-    toggle: false,
-    class: null,
-    id: null
-} %}
 
-{% set inputs = {
-    0: {
-        type: 'select',
-        name: nameText,
-        value: form.integrations.taluspay.transactionType is defined and form.integrations.taluspay.transactionType != '' ? form.integrations.taluspay.transactionType : '',
-        options: fieldsOption |json_encode(),
-        class: 'hidden',
-        id: null,
-        hint: 'TYPE'
-    }
-} %}
 
-{% set modal = {
-    title: 'Transaction Type' |t,
-    instructions: 'Please chose transaction type from the dropdown.' |t,
-    successMessage: 'Transaction Type Updated' |t,
-    inputs: inputs
-} %}
+{#{% import "form-builder/_includes/_components" as components %}#}
 
-{{ components.optionItem(
-    container,
-    modal,
-    inputs
-) }}
+
+{##}
+
+{#{% set container = {#}
+{#    title: 'Transaction Type' |t,#}
+{#    info: null,#}
+{#    icon: null,#}
+{#    toggle: false,#}
+{#    class: null,#}
+{#    id: null#}
+{#} %}#}
+
+{#{% set inputs = {#}
+{#    0: {#}
+{#        type: 'select',#}
+{#        name: nameText,#}
+{#        value: form.integrations.taluspay.transactionType is defined and form.integrations.taluspay.transactionType != '' ? form.integrations.taluspay.transactionType : '',#}
+{#        options: fieldsOption |json_encode(),#}
+{#        class: 'hidden',#}
+{#        id: null,#}
+{#        hint: 'TYPE'#}
+{#    }#}
+{#} %}#}
+
+{#{% set modal = {#}
+{#    title: 'Transaction Type' |t,#}
+{#    instructions: 'Please chose transaction type from the dropdown.' |t,#}
+{#    successMessage: 'Transaction Type Updated' |t,#}
+{#    inputs: inputs#}
+{#} %}#}
+
+{#{{ components.optionItem(#}
+{#    container,#}
+{#    modal,#}
+{#    inputs#}
+{#) }}#}

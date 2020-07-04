@@ -1,5 +1,10 @@
 # Form Builder Integrations Changelog
 
+## 1.0.15 - 2020-07-03
+
+### Improved
+- Updated styles to better fit with Craft UI
+
 ## 1.0.12 - 2019-04-26
 
 ### Fixed

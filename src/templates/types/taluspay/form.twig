@@ -1,72 +1,70 @@
-<input type="hidden" name="type" value="{{ type }}">
+{% import "_includes/forms" as forms %}
 
-<header class="hud-header">
-    <h2>Talus Pay {{ 'Integration'|t('form-builder') }}</h2>
-</header>
+{{ hiddenInput('type', type) }}
 
-<div class="hud-body">
-    <input type="hidden" name="category" value="payment">
-    <input type="hidden" name="frontend" value="1">
+<h2>Talus Pay {{ 'Integration'|t('form-builder') }}</h2>
 
-    <div class="fb-field" id="field-name">
-        <div class="input-hint">NAME</div>
-        <div class="input">
-            <input type="text" class="data-required" data-hint="NAME" name="name" id="integration-name">
-        </div>
-    </div>
+{{ hiddenInput('category', 'payment') }}
+{{ hiddenInput('frontend', '1') }}
 
-    <div class="fb-field" id="field-handle">
-        <div class="input-hint">HANDLE</div>
-        <div class="input">
-            <input type="text" class="data-required" data-hint="HANDLE" name="handle" id="integration-handle">
-        </div>
-    </div>
+{{ forms.textField({
+    label: "Name"|t('form-builder'),
+    id: 'integration-name',
+    name: 'name',
+    first: true,
+    autocorrect: false,
+    autocapitalize: false,
+}) }}
 
-    <div class="hud-section">
-        <h3>{{ 'Settings'|t('form-builder') }}</h3>
-    </div>
+{{ forms.textField({
+    label: "Handle"|t('form-builder'),
+    id: 'integration-handle',
+    name: 'handle',
+    autocorrect: false,
+    autocapitalize: false,
+}) }}
 
-    <div class="fb-field" id="field-id">
-        <div class="input-hint">USERNAME</div>
-        <div class="input">
-            <input type="text" class="data-required" data-hint="USERNAME" name="settings[merchantId]" id="integration-id">
-        </div>
-    </div>
+<h3>{{ 'Settings'|t('form-builder') }}</h3>
 
-    <div class="fb-field" id="field-key">
-        <div class="input-hint">PASSWORD</div>
-        <div class="input">
-            <input type="text" class="data-required" data-hint="PASSWORD" name="settings[merchantKey]" id="integration-key">
-        </div>
-    </div>
+{{ forms.textField({
+    label: "Username"|t('form-builder'),
+    id: 'integration-id',
+    name: 'settings[merchantId]',
+    autocorrect: false,
+    autocapitalize: false,
+}) }}
 
-    <div class="hud-section">
-        <h3>{{ 'Options'|t('form-builder') }}</h3>
-    </div>
+{{ forms.textField({
+    label: "Password"|t('form-builder'),
+    id: 'integration-key',
+    name: 'settings[merchantKey]',
+    autocorrect: false,
+    autocapitalize: false,
+}) }}
 
-    <div class="fb-field" id="field-type">
-        <div class="input-hint">TYPE</div>
-        <div class="select">
-            <select name="settings[type]">
-                <option value="CreditCard">Credit card</option>
-                <option value="ECheckACH">ECheck / ACH</option>
-            </select>
-        </div>
-    </div>
+<h3>{{ 'Options'|t('form-builder') }}</h3>
+
+{{ forms.selectField({
+    label: "Type"|t('form-builder'),
+    id: 'integration-type',
+    name: 'settings[type]',
+    options: [
+        { label: 'Credit Card', value: 'CreditCard' },
+        { label: 'ECheck / ACH', value: 'ECheckACH' }
+    ]
+}) }}
+
+{{ forms.textField({
+    label: "Currency"|t('form-builder'),
+    id: 'integration-currency',
+    name: 'settings[currency]',
+    autocorrect: false,
+    autocapitalize: false,
+    value: 'USD'
+}) }}
 
 
-    <div class="fb-field" id="field-currency">
-        <div class="input-hint">CURRENCY</div>
-        <div class="input">
-            <input type="text" name="settings[currency]" value="USD">
-        </div>
-    </div>
-
+<div class="buttons">
+    <input type="button" class="btn cancel" value="{{ 'Cancel'|t('form-builder') }}">
+    <input type="submit" class="btn submit" value="{{ 'Save'|t('form-builder') }}"/>
 </div>
-
-<footer class="hud-footer">
-    <div class="buttons">
-        <input type="button" class="btns btn-modal cancel" value="{{ 'Cancel'|t('form-builder') }}">
-        <input type="submit" class="btns btn-modal submit" value="{{ 'Save'|t('form-builder') }}"/>
-    </div>
-</footer>

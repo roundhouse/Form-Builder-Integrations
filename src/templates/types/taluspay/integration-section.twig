@@ -28,7 +28,10 @@
 
     <div class="body">
         <div class="fields">
+            {% import "_includes/forms" as forms %}
+
             {% include templatePath ~ 'transaction-type' ignore missing %}
+
             {% if integration.settings.type is defined and integration.settings.type == "ECheckACH" %}
                 {% include templatePath ~ 'ach-aba-number' ignore missing %}
                 {% include templatePath ~ 'ach-bank-account-number' ignore missing %}

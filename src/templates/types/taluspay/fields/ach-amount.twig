@@ -1,4 +1,4 @@
-{% import "form-builder/_includes/_components" as components %}
+{% import "_includes/forms" as forms %}
 
 {% set availableFields = form.fieldLayoutId is defined and form.fieldLayoutId ? craft.app.getFields.getLayoutById(form.fieldLayoutId).getFields() : null %}
 {% set fieldsOption = [] %}
@@ -9,36 +9,47 @@
 
 {% set nameText = 'integrations[taluspay][achAmount]' %}
 
-{% set container = {
-    title: 'Amount Field' |t,
-    info: null,
-    icon: null,
-    toggle: false,
-    class: null,
-    id: null
-} %}
 
-{% set inputs = {
-    0: {
-        type: 'select',
-        name: nameText,
-        value: form.integrations.taluspay.achAmount is defined and form.integrations.taluspay.achAmount != '' ? form.integrations.taluspay.achAmount : '',
-        options: fieldsOption |json_encode(),
-        class: 'hidden',
-        id: null,
-        hint: 'FIELD'
-    }
-} %}
+{{ forms.selectField({
+    label: "Amount Field"|t('form-builder'),
+    instructions: "Transaction Sale Amount. Must be number with 2 decimal places. This amount does not include the tip amount which must be sent separately if needed."|t('form-builder'),
+    value: form.integrations.taluspay.transactionType is defined and form.integrations.taluspay.transactionType != '' ? form.integrations.taluspay.transactionType : '',
+    name: nameText,
+    options: fieldsOption,
+}) }}
 
-{% set modal = {
-    title: 'Amount Field' |t,
-    instructions: 'Transaction Sale Amount. Must be number with 2 decimal places. This amount does not include the tip amount which must be sent separately if needed.' |t,
-    successMessage: 'Amount Field Mapped' |t,
-    inputs: inputs
-} %}
 
-{{ components.optionItem(
-    container,
-    modal,
-    inputs
-) }}
+{#{% import "form-builder/_includes/_components" as components %}#}
+{#{% set container = {#}
+{#    title: 'Amount Field' |t,#}
+{#    info: null,#}
+{#    icon: null,#}
+{#    toggle: false,#}
+{#    class: null,#}
+{#    id: null#}
+{#} %}#}
+
+{#{% set inputs = {#}
+{#    0: {#}
+{#        type: 'select',#}
+{#        name: nameText,#}
+{#        value: form.integrations.taluspay.achAmount is defined and form.integrations.taluspay.achAmount != '' ? form.integrations.taluspay.achAmount : '',#}
+{#        options: fieldsOption |json_encode(),#}
+{#        class: 'hidden',#}
+{#        id: null,#}
+{#        hint: 'FIELD'#}
+{#    }#}
+{#} %}#}
+
+{#{% set modal = {#}
+{#    title: 'Amount Field' |t,#}
+{#    instructions: 'Transaction Sale Amount. Must be number with 2 decimal places. This amount does not include the tip amount which must be sent separately if needed.' |t,#}
+{#    successMessage: 'Amount Field Mapped' |t,#}
+{#    inputs: inputs#}
+{#} %}#}
+
+{#{{ components.optionItem(#}
+{#    container,#}
+{#    modal,#}
+{#    inputs#}
+{#) }}#}

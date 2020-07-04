@@ -1,4 +1,4 @@
-{% import "form-builder/_includes/_components" as components %}
+{% import "_includes/forms" as forms %}
 
 {% set availableFields = form.fieldLayoutId is defined and form.fieldLayoutId ? craft.app.getFields.getLayoutById(form.fieldLayoutId).getFields() : null %}
 {% set fieldsOption = [] %}
@@ -10,45 +10,63 @@
 {% set firstName = 'integrations[converge][firstNameField]' %}
 {% set lastName = 'integrations[converge][lastNameField]' %}
 
-{% set container = {
-    title: 'Customer Name Fields' |t,
-    info: null,
-    icon: null,
-    toggle: false,
-    class: null,
-    id: null
-} %}
+{{ forms.selectField({
+    label: "Customer First Name Field"|t('form-builder'),
+    instructions: "Please map customer first name field to available fields from the dropdown."|t('form-builder'),
+    value: form.integrations.converge.firstNameField is defined and form.integrations.converge.firstNameField != '' ? form.integrations.converge.firstNameField : '',
+    name: firstName,
+    options: fieldsOption,
+}) }}
 
-{% set inputs = {
-    0: {
-        type: 'select',
-        name: firstName,
-        value: form.integrations.converge.firstNameField is defined and form.integrations.converge.firstNameField != '' ? form.integrations.converge.firstNameField : '',
-        options: fieldsOption |json_encode(),
-        class: 'hidden',
-        id: null,
-        hint: 'FIRST NAME FIELD'
-    },
-    1: {
-        type: 'select',
-        name: lastName,
-        value: form.integrations.converge.lastNameField is defined and form.integrations.converge.lastNameField != '' ? form.integrations.converge.lastNameField : '',
-        options: fieldsOption |json_encode(),
-        class: 'hidden',
-        id: null,
-        hint: 'LAST NAME FIELD'
-    }
-} %}
+{{ forms.selectField({
+    label: "Customer Last Name Field"|t('form-builder'),
+    instructions: "Please map customer last name field to available fields from the dropdown."|t('form-builder'),
+    value: form.integrations.converge.lastNameField is defined and form.integrations.converge.lastNameField != '' ? form.integrations.converge.lastNameField : '',
+    name: lastName,
+    options: fieldsOption,
+}) }}
 
-{% set modal = {
-    title: 'Customer Name Fields' |t,
-    instructions: 'Please map customer name fields to available fields from the dropdown.' |t,
-    successMessage: 'Name Field Mapped' |t,
-    inputs: inputs
-} %}
 
-{{ components.optionItem(
-    container,
-    modal,
-    inputs
-) }}
+{#{% import "form-builder/_includes/_components" as components %}#}
+{#{% set container = {#}
+{#    title: 'Customer Name Fields' |t,#}
+{#    info: null,#}
+{#    icon: null,#}
+{#    toggle: false,#}
+{#    class: null,#}
+{#    id: null#}
+{#} %}#}
+
+{#{% set inputs = {#}
+{#    0: {#}
+{#        type: 'select',#}
+{#        name: firstName,#}
+{#        value: form.integrations.converge.firstNameField is defined and form.integrations.converge.firstNameField != '' ? form.integrations.converge.firstNameField : '',#}
+{#        options: fieldsOption |json_encode(),#}
+{#        class: 'hidden',#}
+{#        id: null,#}
+{#        hint: 'FIRST NAME FIELD'#}
+{#    },#}
+{#    1: {#}
+{#        type: 'select',#}
+{#        name: lastName,#}
+{#        value: form.integrations.converge.lastNameField is defined and form.integrations.converge.lastNameField != '' ? form.integrations.converge.lastNameField : '',#}
+{#        options: fieldsOption |json_encode(),#}
+{#        class: 'hidden',#}
+{#        id: null,#}
+{#        hint: 'LAST NAME FIELD'#}
+{#    }#}
+{#} %}#}
+
+{#{% set modal = {#}
+{#    title: 'Customer Name Fields' |t,#}
+{#    instructions: 'Please map customer name fields to available fields from the dropdown.' |t,#}
+{#    successMessage: 'Name Field Mapped' |t,#}
+{#    inputs: inputs#}
+{#} %}#}
+
+{#{{ components.optionItem(#}
+{#    container,#}
+{#    modal,#}
+{#    inputs#}
+{#) }}#}

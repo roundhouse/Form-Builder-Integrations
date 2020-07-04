@@ -1,4 +1,4 @@
-{% import "form-builder/_includes/_components" as components %}
+{% import "_includes/forms" as forms %}
 
 {% set availableFields = form.fieldLayoutId is defined and form.fieldLayoutId ? craft.app.getFields.getLayoutById(form.fieldLayoutId).getFields() : null %}
 {% set fieldsOption = [] %}
@@ -9,36 +9,46 @@
 
 {% set nameText = 'integrations[taluspay][phoneField]' %}
 
-{% set container = {
-    title: 'Customer Phone Field' |t,
-    info: null,
-    icon: null,
-    toggle: false,
-    class: null,
-    id: null
-} %}
+{{ forms.selectField({
+    label: "Customer Phone Field"|t('form-builder'),
+    instructions: "Please chose transaction type from the dropdown."|t('form-builder'),
+    value: form.integrations.taluspay.phoneField is defined and form.integrations.taluspay.phoneField != '' ? form.integrations.taluspay.phoneField : '',
+    name: nameText,
+    options: fieldsOption,
+}) }}
 
-{% set inputs = {
-    0: {
-        type: 'select',
-        name: nameText,
-        value: form.integrations.taluspay.phoneField is defined and form.integrations.taluspay.phoneField != '' ? form.integrations.taluspay.phoneField : '',
-        options: fieldsOption |json_encode(),
-        class: 'hidden',
-        id: null,
-        hint: 'FIELD'
-    }
-} %}
 
-{% set modal = {
-    title: 'Customer Phone Field' |t,
-    instructions: 'Please map phone field to available fields from the dropdown.' |t,
-    successMessage: 'Phone Field Mapped' |t,
-    inputs: inputs
-} %}
+{#{% import "form-builder/_includes/_components" as components %}#}
+{#{% set container = {#}
+{#    title: 'Customer Phone Field' |t,#}
+{#    info: null,#}
+{#    icon: null,#}
+{#    toggle: false,#}
+{#    class: null,#}
+{#    id: null#}
+{#} %}#}
 
-{{ components.optionItem(
-    container,
-    modal,
-    inputs
-) }}
+{#{% set inputs = {#}
+{#    0: {#}
+{#        type: 'select',#}
+{#        name: nameText,#}
+{#        value: form.integrations.taluspay.phoneField is defined and form.integrations.taluspay.phoneField != '' ? form.integrations.taluspay.phoneField : '',#}
+{#        options: fieldsOption |json_encode(),#}
+{#        class: 'hidden',#}
+{#        id: null,#}
+{#        hint: 'FIELD'#}
+{#    }#}
+{#} %}#}
+
+{#{% set modal = {#}
+{#    title: 'Customer Phone Field' |t,#}
+{#    instructions: 'Please map phone field to available fields from the dropdown.' |t,#}
+{#    successMessage: 'Phone Field Mapped' |t,#}
+{#    inputs: inputs#}
+{#} %}#}
+
+{#{{ components.optionItem(#}
+{#    container,#}
+{#    modal,#}
+{#    inputs#}
+{#) }}#}

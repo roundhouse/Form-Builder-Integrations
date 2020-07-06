@@ -1,10 +1,10 @@
 {% for integration in integrations %}
-    <div class="item has-hover pad">
-        <a href="#" class="item-meta add-integration" data-type="{{ integration.type }}">
-            <div class="item-meta-icon">{% include 'form-builder-integrations/icons/integrations-' ~ integration.icon ignore missing %}</div>
+    <li>
+        <a href="{{ url('form-builder/integrations/new/' ~ integration.type) }}" class="item-meta add-integration" data-type="{{ integration.type }}">
+            <div class="menu-wrapper">
+                <div class="item-meta-icon">{% include 'form-builder-integrations/icons/integrations-' ~ integration.icon ignore missing %}</div>
+                <div>{{ integration.name }}</div>
+            </div>
         </a>
-        <div class="item-info">
-            <div class="item-meta-title">{{ integration.name }}</div>
-        </div>
-    </div>
+    </li>
 {% endfor %}

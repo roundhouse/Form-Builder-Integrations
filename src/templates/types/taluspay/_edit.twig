@@ -1,57 +1,55 @@
-<div class="widget full-col">
-    <header class="pad">
-        <h2>{{ "Settings"|t('form-builder') }}</h2>
-    </header>
-    <div class="body">
-        <div class="list settings-list">
-            <div class="list-item">
+{% import "_includes/forms" as forms %}
 
-                <div class="fb-field ">
-                    <div class="input-hint">MERCHANT ID</div>
-                    <div class="input">
-                        <input type="text" name="settings[merchantId]" value="{{ entry.settings['merchantId'] is defined ? entry.settings['merchantId'] : null }}">
-                    </div>
-                </div>
+<h2>{{ "Settings"|t('form-builder') }}</h2>
 
-                <div class="fb-field ">
-                    <div class="input-hint">MERCHANT KEY</div>
-                    <div class="input">
-                        <input type="text" name="settings[merchantKey]" value="{{ entry.settings['merchantKey'] is defined ? entry.settings['merchantKey'] : null }}">
-                    </div>
-                </div>
+{{ forms.textField({
+    label: "Mechant ID"|t('form-builder'),
+    id: 'integration-merchant-id',
+    name: 'settings[merchantId]',
+    value: entry.settings.merchantId is defined ? entry.settings.merchantId,
+    autocorrect: false,
+    autocapitalize: false,
+}) }}
 
-                <div class="fb-field" id="field-type">
-                    <div class="input-hint">TYPE</div>
-                    <div class="select">
-                        <select name="settings[type]">
-                            <option value="CreditCard" {% if entry.settings['type'] is defined and entry.settings['type'] == 'CreditCard' %}selected{% endif %}>Credit card</option>
-                            <option value="ECheckACH" {% if entry.settings['type'] is defined and entry.settings['type'] == 'ECheckACH' %}selected{% endif %}>ECheck / ACH</option>
-                        </select>
-                    </div>
-                </div>
+{{ forms.textField({
+    label: "Mechant Key"|t('form-builder'),
+    id: 'integration-merchant-key',
+    name: 'settings[merchantKey]',
+    value: entry.settings.merchantKey is defined ? entry.settings.merchantKey,
+    autocorrect: false,
+    autocapitalize: false,
+}) }}
 
-                <div class="fb-field" id="field-currency">
-                    <div class="input-hint">CURRENCY</div>
-                    <div class="input">
-                        <input type="text" name="settings[currency]" value="{{ entry.settings['currency'] is defined ? entry.settings['currency'] : null }}">
-                    </div>
-                </div>
+{{ forms.selectField({
+    label: "Type"|t('form-builder'),
+    id: 'integration-merchant-type',
+    name: 'settings[type]',
+    value: entry.settings.type is defined ? entry.settings.type,
+    options: [
+        {label: 'Credit Card', value: 'CreditCard'},
+        {label: 'ECheck / ACH', value: 'ECheckACH'},
+    ],
+}) }}
 
-            </div>
-        </div>
-    </div>
-</div>
+{{ forms.textField({
+    label: "Currency"|t('form-builder'),
+    id: 'integration-currency',
+    name: 'settings[currency]',
+    value: entry.settings.currency is defined ? entry.settings.currency,
+    autocorrect: false,
+    autocapitalize: false,
+}) }}
 
-<div class="widget full-col">
-    <header class="pad">
-        <h2>{{ "Details"|t('form-builder') }}</h2>
-    </header>
-    <div class="body">
-        <ul class="list-dots theme-green">
-            <li>{{ 'Category'|t('form-builder') }}: {{ entry.category }}</li>
-            {#{% if entry.frontend %}#}
-                {#<li>{{ 'Will display on the frontend'|t('form-builder') }}</li>#}
-            {#{% endif %}#}
-        </ul>
-    </div>
-</div>
+{#<div class="widget full-col">#}
+{#    <header class="pad">#}
+{#        <h2>{{ "Details"|t('form-builder') }}</h2>#}
+{#    </header>#}
+{#    <div class="body">#}
+{#        <ul class="list-dots theme-green">#}
+{#            <li>{{ 'Category'|t('form-builder') }}: {{ entry.category }}</li>#}
+{#            #}{#{% if entry.frontend %}#}
+{#                #}{#<li>{{ 'Will display on the frontend'|t('form-builder') }}</li>#}
+{#            #}{#{% endif %}#}
+{#        </ul>#}
+{#    </div>#}
+{#</div>#}

@@ -1,5 +1,10 @@
 # Form Builder Integrations Changelog
 
+## 1.0.16 - 2020-07-06
+
+### Improved
+- Updated input styles
+
 ## 1.0.15 - 2020-07-03
 
 ### Improved
